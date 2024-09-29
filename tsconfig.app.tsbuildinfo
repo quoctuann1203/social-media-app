@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/_auth/authlayout.tsx","./src/_auth/forms/signinform.tsx","./src/_auth/forms/signupform.tsx","./src/_root/rootlayout.tsx","./src/_root/pages/home.tsx","./src/_root/pages/index.ts","./src/components/ui/button.tsx","./src/lib/utils.ts"],"errors":true,"version":"5.6.2"}
