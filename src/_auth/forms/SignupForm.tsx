@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../../components/ui/button";
 import { useForm } from "react-hook-form";
@@ -14,18 +15,22 @@ import { Input } from "../../components/ui/input";
 import { SignupValidation } from "../../lib/validation";
 import { z } from "zod";
 import Loader from "../../components/shared/Loader";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   useCreateUserAccount,
   useSignInAccount,
 } from "../../lib/react-query/queriesAndMutations";
+import { useUserContext } from "../../Context/AuthContext";
 
 const SignupForm = () => {
   const { toast } = useToast();
-  const { mutateAsync: createUserAccount, isLoading: isCreatingUser } =
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+  const navigate = useNavigate();
+
+  const { mutateAsync: createUserAccount, isPending: isCreatingUser } =
     useCreateUserAccount();
 
-  const { mutateAsync: signInAccount, isLoading: isSignInAccount } =
+  const { mutateAsync: signInAccount, isPending: isSignInAccount } =
     useSignInAccount();
 
   // 1. Define your form.
@@ -56,6 +61,17 @@ const SignupForm = () => {
     if (!session) {
       return toast({
         title: "Sign in failed. Please try again",
+      });
+    }
+
+    const isLoggedIn = await checkAuthUser();
+
+    if (isLoggedIn) {
+      form.reset();
+      navigate("/");
+    } else {
+      return toast({
+        title: "Failed to log in. Please try again",
       });
     }
   }
@@ -128,7 +144,7 @@ const SignupForm = () => {
           )}
         />
         <Button className="shad-button_primary" type="submit">
-          {isCreatingUser ? (
+          {isSignInAccount ? (
             <div className="flex-center gap-2">
               <Loader /> Loading ...
             </div>
